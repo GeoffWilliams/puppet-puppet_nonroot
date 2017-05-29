@@ -1,0 +1,13 @@
+<%- | String $challenge_password,
+      Hash $extension_requests,
+| -%>
+<% if $challenge_password { -%>
+custom_attributes:
+  challengePassword: '<%= $challenge_password %>'
+<% } -%>
+<%if $extension_requests.size { -%>
+extension_requests:
+<% $extension_requests.each |$k,$v| { -%>
+  <%= $k %>: '<%= $v %>'
+<% } -%>
+<% } -%>

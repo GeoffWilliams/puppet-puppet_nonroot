@@ -1,48 +1,112 @@
-# Class: puppet_nonroot
-# ===========================
+# Puppet_nonroot
 #
-# Full description of class puppet_nonroot here.
+# Configure and start a non-root puppet agent (requires root agent already
+# installed and running)
 #
-# Parameters
-# ----------
+# @example Creating a non-root agent instance
+#   puppet_nonroot { "puppet-azure-provisioner.megacorp.com":
+#     user               => "azure-provisioner",
+#     puppet_master_fqdn => "puppet.megacorp.com",
+#   }
 #
-# Document parameters here.
-#
-# * `sample parameter`
-# Explanation of what this parameter affects and what it defaults to.
-# e.g. "Specify one or more upstream ntp servers as an array."
-#
-# Variables
-# ----------
-#
-# Here you should define a list of variables that this module would require.
-#
-# * `sample variable`
-#  Explanation of how this variable affects the function of this class and if
-#  it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#  External Node Classifier as a comma separated list of hostnames." (Note,
-#  global variables should be avoided in favor of class parameters as
-#  of Puppet 2.6.)
-#
-# Examples
-# --------
-#
-# @example
-#    class { 'puppet_nonroot':
-#      servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
-#    }
-#
-# Authors
-# -------
-#
-# Author Name <author@domain.com>
-#
-# Copyright
-# ---------
-#
-# Copyright 2017 Your name here, unless otherwise noted.
-#
-class puppet_nonroot {
+# @param puppet_master_fqdn Fully qualified domain name of the Puppet Master to
+#   that will be managing this agent instance.  Must already be resolvable
+# @param user Local user to run agent as (will be created)
+# @param certname The unique identifier for this agent instance in Puppet
+# @param homedir Set a custom homedir for `user`, otherwise default is `/home/$user`
+# @param challenge_password Password for policy based autosigning
+#   @see http://www.geoffwilliams.me.uk/puppet/policy_based_autosigning
+# @param extension_requests Hash of extension requests
+#   @see https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html
+define puppet_nonroot(
+    String            $puppet_master_fqdn,
+    String            $user,
+    String            $certname           = $title,
+    Optional[String]  $homedir            = undef,
+    Optional[String]  $challenge_password = undef,
+    Optional[Hash]    $extension_requests = {},
+) {
 
+  $_homedir       = pick($homedir, "/home/${user}")
+  $puppet_home    = "${_homedir}/.puppetlabs/etc/puppet"
+  $puppet_conf    = "${puppet_home}/puppet.conf"
+  $csr_attributes = "${puppet_home}/csr_attributes.yaml"
+  $service        = "puppet-${certname}"
+  $unit           = "/etc/systemd/system/puppet-${certname}.service"
+
+  # daemon reload - workaround for https://tickets.puppetlabs.com/browse/PUP-3483
+  $nasty_systemd_hack = "${module_name}_systemd_hack"
+
+  File {
+    owner => $user,
+    group => $user,
+    mode  => "0640",
+  }
+
+  Ini_setting {
+    ensure  => present,
+    path    => $puppet_conf,
+    section => 'agent',
+  }
+
+  user { $user:
+    ensure => present,
+    home   => $_homedir,
+  }
+
+  file { [
+    $_homedir,
+    "${_homedir}/.puppetlabs",
+    "${_homedir}/.puppetlabs/etc/",
+    "${_homedir}/.puppetlabs/etc/puppet"]:
+    ensure => directory,
+  }
+
+  file { $puppet_conf:
+    ensure => file,
+  }
+
+  if $challenge_password or ! empty($extension_requests) {
+    file { $csr_attributes:
+      ensure  => file,
+      content => epp("${module_name}/csr_attributes.yaml.epp", {
+        "csr_attributes"     => $csr_attributes,
+        "extension_requests" => $extension_requests,
+      })
+    }
+  }
+
+  ini_setting { "${puppet_conf} agent:certname":
+    setting => 'certname',
+    value   => $certname,
+  }
+
+  ini_setting { "${puppet_conf} agent:server":
+    setting => 'server',
+    value   => $puppet_master_fqdn,
+  }
+
+  file { $unit:
+    ensure  => file,
+    notify  => Exec[$nasty_systemd_hack],
+    content => epp("${module_name}/puppet.epp", {
+      "user"     => $user,
+      "certname" =>$certname
+    }),
+  }
+
+  if ! defined(Exec[$nasty_systemd_hack]) {
+    exec { $nasty_systemd_hack:
+      command     => "systemctl daemon-reload",
+      refreshonly => true,
+      path        => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],
+    }
+  }
+
+  service { $service:
+    ensure  => running,
+    enable  => true,
+    require => [File[$unit], Exec[$nasty_systemd_hack]],
+  }
 
 }

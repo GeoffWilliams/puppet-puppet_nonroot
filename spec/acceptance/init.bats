@@ -1,9 +1,7 @@
-# BATS test file to run after executing 'examples/init.pp' with puppet.
-#
-# For more info on BATS see https://github.com/sstephenson/bats
+@test "puppet1 operating" {
+  ps -eaf |grep puppet1
+}
 
-# Tests are really easy! just the exit status of running a command...
-@test "addition using bc" {
-  result="$(ls /)"
-  [ "$?" -eq 0 ]
+@test "puppet2 operating" {
+  ps -eaf |grep puppet1
 }

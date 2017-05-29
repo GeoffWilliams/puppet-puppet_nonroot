@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: puppet_nonroot
+  
+    &mdash; Documentation by YARD 0.9.9
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::puppet_nonroot";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (p)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">puppet_nonroot</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_defined_type_list_link"
+        href="../puppet_defined_type_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: puppet_nonroot</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/init.pp
+    </dd>
+  </dl>
+</div>
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<p>Puppet_nonroot</p>
+
+<p>Configure and start a non-root puppet agent (requires root agent already
+installed and running)</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>Creating a non-root agent instance</p>
+</div></p>
+      
+      <pre class="example code"><code>puppet_nonroot { &quot;puppet-azure-provisioner.megacorp.com&quot;:
+  user               =&gt; &quot;azure-provisioner&quot;,
+  puppet_master_fqdn =&gt; &quot;puppet.megacorp.com&quot;,
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>puppet_master_fqdn</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Fully qualified domain name of the Puppet Master to that will be managing
+this agent instance. Must already be resolvable</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Local user to run agent as (will be created)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>certname</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$title</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>The unique identifier for this agent instance in Puppet</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>homedir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Set a custom homedir for <code>user</code>, otherwise default is
+<code>/home/$user</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>challenge_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Password for policy based autosigning @see <a
+href="http://www.geoffwilliams.me.uk/puppet/policy_based_autosigning">www.geoffwilliams.me.uk/puppet/policy_based_autosigning</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>extension_requests</span>
+      
+      
+        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Hash of extension requests @see <a
+href="https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html">docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html</a></p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 21</span>
+
+define puppet_nonroot(
+    String            $puppet_master_fqdn,
+    String            $user,
+    String            $certname           = $title,
+    Optional[String]  $homedir            = undef,
+    Optional[String]  $challenge_password = undef,
+    Optional[Hash]    $extension_requests = {},
+) {
+
+  $_homedir       = pick($homedir, &quot;/home/${user}&quot;)
+  $puppet_home    = &quot;${_homedir}/.puppetlabs/etc/puppet&quot;
+  $puppet_conf    = &quot;${puppet_home}/puppet.conf&quot;
+  $csr_attributes = &quot;${puppet_home}/csr_attributes.yaml&quot;
+  $service        = &quot;puppet-${certname}&quot;
+  $unit           = &quot;/etc/systemd/system/puppet-${certname}.service&quot;
+
+  # daemon reload - workaround for https://tickets.puppetlabs.com/browse/PUP-3483
+  $nasty_systemd_hack = &quot;${module_name}_systemd_hack&quot;
+
+  File {
+    owner =&gt; $user,
+    group =&gt; $user,
+    mode  =&gt; &quot;0640&quot;,
+  }
+
+  Ini_setting {
+    ensure  =&gt; present,
+    path    =&gt; $puppet_conf,
+    section =&gt; &#39;agent&#39;,
+  }
+
+  user { $user:
+    ensure =&gt; present,
+    home   =&gt; $_homedir,
+  }
+
+  file { [
+    $_homedir,
+    &quot;${_homedir}/.puppetlabs&quot;,
+    &quot;${_homedir}/.puppetlabs/etc/&quot;,
+    &quot;${_homedir}/.puppetlabs/etc/puppet&quot;]:
+    ensure =&gt; directory,
+  }
+
+  file { $puppet_conf:
+    ensure =&gt; file,
+  }
+
+  if $challenge_password or ! empty($extension_requests) {
+    file { $csr_attributes:
+      ensure  =&gt; file,
+      content =&gt; epp(&quot;${module_name}/csr_attributes.yaml.epp&quot;, {
+        &quot;csr_attributes&quot;     =&gt; $csr_attributes,
+        &quot;extension_requests&quot; =&gt; $extension_requests,
+      })
+    }
+  }
+
+  ini_setting { &quot;${puppet_conf} agent:certname&quot;:
+    setting =&gt; &#39;certname&#39;,
+    value   =&gt; $certname,
+  }
+
+  ini_setting { &quot;${puppet_conf} agent:server&quot;:
+    setting =&gt; &#39;server&#39;,
+    value   =&gt; $puppet_master_fqdn,
+  }
+
+  file { $unit:
+    ensure  =&gt; file,
+    notify  =&gt; Exec[$nasty_systemd_hack],
+    content =&gt; epp(&quot;${module_name}/puppet.epp&quot;, {
+      &quot;user&quot;     =&gt; $user,
+      &quot;certname&quot; =&gt;$certname
+    }),
+  }
+
+  if ! defined(Exec[$nasty_systemd_hack]) {
+    exec { $nasty_systemd_hack:
+      command     =&gt; &quot;systemctl daemon-reload&quot;,
+      refreshonly =&gt; true,
+      path        =&gt; [&#39;/usr/sbin&#39;, &#39;/sbin&#39;, &#39;/usr/bin&#39;, &#39;/bin&#39;],
+    }
+  }
+
+  service { $service:
+    ensure  =&gt; running,
+    enable  =&gt; true,
+    require =&gt; [File[$unit], Exec[$nasty_systemd_hack]],
+  }
+
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>
