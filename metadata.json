@@ -1,0 +1,18 @@
+{
+  "name": "geoffwilliams-puppet_nonroot",
+  "version": "0.1.0",
+  "author": "geoffwilliams",
+  "summary": "Run a puppet service as non-root user",
+  "license": "Apache-2.0",
+  "source": "https://github.com/GeoffWilliams/puppet-puppet_nonroot.git",
+  "project_page": null,
+  "issues_url": "https://api.github.com/repos/GeoffWilliams/puppet-puppet_nonroot/issues{/number}",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    }
+  ],
+  "data_provider": null,
+  "project_url": "https://github.com/GeoffWilliams/puppet-puppet_nonroot.git"
+}
