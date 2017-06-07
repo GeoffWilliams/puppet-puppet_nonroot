@@ -307,16 +307,7 @@ href="https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html">docs.p
 109
 110
 111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121</pre>
+112</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 21</span>
@@ -359,19 +350,10 @@ define puppet_nonroot(
 
   file { [
     $_homedir,
-    &quot;${_homedir}/.facter&quot;,
-    &quot;${_homedir}/.facter/facts.d&quot;,
     &quot;${_homedir}/.puppetlabs&quot;,
     &quot;${_homedir}/.puppetlabs/etc/&quot;,
     &quot;${_homedir}/.puppetlabs/etc/puppet&quot;]:
     ensure =&gt; directory,
-  }
-
-  # create a custom fact to identify this as a non-root-agent so that we can
-  # prevent configuation of mcollective and orchestrator
-  file { &quot;${_homedir}/.facter/facts.d/non_root_puppet.txt&quot;:
-    ensure  =&gt; file,
-    content =&gt; &quot;non_root_puppet=true&quot;
   }
 
   file { $puppet_conf:

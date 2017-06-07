@@ -56,19 +56,10 @@ define puppet_nonroot(
 
   file { [
     $_homedir,
-    "${_homedir}/.facter",
-    "${_homedir}/.facter/facts.d",
     "${_homedir}/.puppetlabs",
     "${_homedir}/.puppetlabs/etc/",
     "${_homedir}/.puppetlabs/etc/puppet"]:
     ensure => directory,
-  }
-
-  # create a custom fact to identify this as a non-root-agent so that we can
-  # prevent configuation of mcollective and orchestrator
-  file { "${_homedir}/.facter/facts.d/non_root_puppet.txt":
-    ensure  => file,
-    content => "non_root_puppet=true"
   }
 
   file { $puppet_conf:
