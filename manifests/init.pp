@@ -70,7 +70,7 @@ define puppet_nonroot(
     file { $csr_attributes:
       ensure  => file,
       content => epp("${module_name}/csr_attributes.yaml.epp", {
-        "csr_attributes"     => $csr_attributes,
+        "challenge_password" => $challenge_password,
         "extension_requests" => $extension_requests,
       })
     }

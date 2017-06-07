@@ -8,6 +8,7 @@ describe 'puppet_nonroot', :type => :define do
     {
       :user               => "bob",
       :puppet_master_fqdn => "puppet.fake",
+      :challenge_password => "top_secret",
     }
   end
 
