@@ -1,5 +1,5 @@
-<%- | String $challenge_password,
-      Hash $extension_requests,
+<%- | Optional[String] $challenge_password,
+      Optional[Hash]   $extension_requests,
 | -%>
 <% if $challenge_password { -%>
 custom_attributes:
