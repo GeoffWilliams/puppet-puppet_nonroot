@@ -18,13 +18,16 @@
 #   @see http://www.geoffwilliams.me.uk/puppet/policy_based_autosigning
 # @param extension_requests Hash of extension requests
 #   @see https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html
-define puppet_nonroot(
-    String            $puppet_master_fqdn,
-    String            $user,
-    String            $certname           = $title,
-    Optional[String]  $homedir            = undef,
-    Optional[String]  $challenge_password = undef,
-    Optional[Hash]    $extension_requests = {},
+define puppet_nonroot (
+    String           $puppet_master_fqdn,
+    String           $user,
+    String           $certname           = $title,
+    Optional[String] $homedir            = undef,
+    Optional[String] $challenge_password = undef,
+    Optional[Hash]   $extension_requests = {},
+    Boolean          $manage_service     = true,
+    Boolean          $service_enable     = true,
+    String           $service_ensure     = 'running',
 ) {
 
   $_homedir       = pick($homedir, "/home/${user}")
@@ -86,27 +89,29 @@ define puppet_nonroot(
     value   => $puppet_master_fqdn,
   }
 
-  file { $unit:
-    ensure  => file,
-    notify  => Exec[$nasty_systemd_hack],
-    content => epp("${module_name}/puppet.epp", {
-      "user"     => $user,
-      "certname" =>$certname
-    }),
-  }
-
-  if ! defined(Exec[$nasty_systemd_hack]) {
-    exec { $nasty_systemd_hack:
-      command     => "systemctl daemon-reload",
-      refreshonly => true,
-      path        => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],
+  if $manage_service {
+    file { $unit:
+      ensure  => file,
+      notify  => Exec[$nasty_systemd_hack],
+      content => epp("${module_name}/puppet.epp", {
+        "user"     => $user,
+        "certname" => $certname,
+      }),
     }
-  }
 
-  service { $service:
-    ensure  => running,
-    enable  => true,
-    require => [File[$unit], Exec[$nasty_systemd_hack]],
+    if ! defined(Exec[$nasty_systemd_hack]) {
+      exec { $nasty_systemd_hack:
+        command     => "systemctl daemon-reload",
+        refreshonly => true,
+        path        => ['/usr/sbin', '/sbin', '/usr/bin', '/bin'],
+      }
+    }
+
+    service { $service:
+      ensure  => $service_ensure,
+      enable  => $service_enable,
+      require => [File[$unit], Exec[$nasty_systemd_hack]],
+    }
   }
 
 }
