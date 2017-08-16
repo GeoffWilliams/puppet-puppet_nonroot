@@ -68,7 +68,6 @@
     </dd>
   </dl>
 </div>
-
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -218,6 +217,12 @@ href="https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html">docs.p
         <em class="default">(defaults to: <tt>true</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>true if you want this class to manage this agent as a service, otherwise
+false</p>
+</div>
+      
     </li>
   
     <li>
@@ -230,6 +235,12 @@ href="https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html">docs.p
       
         <em class="default">(defaults to: <tt>true</tt>)</em>
       
+      
+        &mdash;
+        <div class='inline'>
+<p>true if you want this class to enable this agent as a service when
+<code>manage_service</code> is also true, otherwise false</p>
+</div>
       
     </li>
   
@@ -244,6 +255,13 @@ href="https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html">docs.p
         <em class="default">(defaults to: <tt>&#39;running&#39;</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p><code>running</code> if you want this class to make sure this agent is
+running, otherwise a valid <code>ensure</code> value for
+<code>service</code> resources</p>
+</div>
+      
     </li>
   
 </ul>
@@ -256,12 +274,6 @@ href="https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html">docs.p
         <pre class="lines">
 
 
-21
-22
-23
-24
-25
-26
 27
 28
 29
@@ -352,10 +364,16 @@ href="https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html">docs.p
 114
 115
 116
-117</pre>
+117
+118
+119
+120
+121
+122
+123</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 21</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 27</span>
 
 define puppet_nonroot (
     String           $puppet_master_fqdn,

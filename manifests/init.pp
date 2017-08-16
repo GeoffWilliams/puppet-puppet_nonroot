@@ -18,6 +18,12 @@
 #   @see http://www.geoffwilliams.me.uk/puppet/policy_based_autosigning
 # @param extension_requests Hash of extension requests
 #   @see https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html
+# @param manage_service true if you want this class to manage this agent as a
+#   service, otherwise false
+# @param service_enable true if you want this class to enable this agent as a
+#   service when `manage_service` is also true, otherwise false
+# @param service_ensure `running` if you want this class to make sure this
+#   agent is running, otherwise a valid `ensure` value for `service` resources
 define puppet_nonroot (
     String           $puppet_master_fqdn,
     String           $user,
