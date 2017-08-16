@@ -68,6 +68,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -206,6 +207,45 @@ href="https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html">docs.p
       
     </li>
   
+    <li>
+      
+        <span class='name'>manage_service</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_enable</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;running&#39;</tt>)</em>
+      
+      
+    </li>
+  
 </ul>
 
 
@@ -307,18 +347,26 @@ href="https://docs.puppet.com/puppet/4.10/ssl_attributes_extensions.html">docs.p
 109
 110
 111
-112</pre>
+112
+113
+114
+115
+116
+117</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/init.pp', line 21</span>
 
-define puppet_nonroot(
-    String            $puppet_master_fqdn,
-    String            $user,
-    String            $certname           = $title,
-    Optional[String]  $homedir            = undef,
-    Optional[String]  $challenge_password = undef,
-    Optional[Hash]    $extension_requests = {},
+define puppet_nonroot (
+    String           $puppet_master_fqdn,
+    String           $user,
+    String           $certname           = $title,
+    Optional[String] $homedir            = undef,
+    Optional[String] $challenge_password = undef,
+    Optional[Hash]   $extension_requests = {},
+    Boolean          $manage_service     = true,
+    Boolean          $service_enable     = true,
+    String           $service_ensure     = &#39;running&#39;,
 ) {
 
   $_homedir       = pick($homedir, &quot;/home/${user}&quot;)
@@ -380,27 +428,29 @@ define puppet_nonroot(
     value   =&gt; $puppet_master_fqdn,
   }
 
-  file { $unit:
-    ensure  =&gt; file,
-    notify  =&gt; Exec[$nasty_systemd_hack],
-    content =&gt; epp(&quot;${module_name}/puppet.epp&quot;, {
-      &quot;user&quot;     =&gt; $user,
-      &quot;certname&quot; =&gt;$certname
-    }),
-  }
-
-  if ! defined(Exec[$nasty_systemd_hack]) {
-    exec { $nasty_systemd_hack:
-      command     =&gt; &quot;systemctl daemon-reload&quot;,
-      refreshonly =&gt; true,
-      path        =&gt; [&#39;/usr/sbin&#39;, &#39;/sbin&#39;, &#39;/usr/bin&#39;, &#39;/bin&#39;],
+  if $manage_service {
+    file { $unit:
+      ensure  =&gt; file,
+      notify  =&gt; Exec[$nasty_systemd_hack],
+      content =&gt; epp(&quot;${module_name}/puppet.epp&quot;, {
+        &quot;user&quot;     =&gt; $user,
+        &quot;certname&quot; =&gt; $certname,
+      }),
     }
-  }
 
-  service { $service:
-    ensure  =&gt; running,
-    enable  =&gt; true,
-    require =&gt; [File[$unit], Exec[$nasty_systemd_hack]],
+    if ! defined(Exec[$nasty_systemd_hack]) {
+      exec { $nasty_systemd_hack:
+        command     =&gt; &quot;systemctl daemon-reload&quot;,
+        refreshonly =&gt; true,
+        path        =&gt; [&#39;/usr/sbin&#39;, &#39;/sbin&#39;, &#39;/usr/bin&#39;, &#39;/bin&#39;],
+      }
+    }
+
+    service { $service:
+      ensure  =&gt; $service_ensure,
+      enable  =&gt; $service_enable,
+      require =&gt; [File[$unit], Exec[$nasty_systemd_hack]],
+    }
   }
 
 }</pre>
